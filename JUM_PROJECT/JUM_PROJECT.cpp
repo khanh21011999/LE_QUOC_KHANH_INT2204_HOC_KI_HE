@@ -9,6 +9,7 @@
 using namespace sf;
 int main()
 {
+	Vector2f v;
 	sf::Clock clock;
 	RenderWindow windows(VideoMode(532, 850), "Jump Game");
 	windows.setSize(Vector2u(532, 850));
