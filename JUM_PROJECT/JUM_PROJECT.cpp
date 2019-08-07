@@ -39,31 +39,43 @@ int main()
 	Sprite playerSprite(playerLeftTexture);
 	Sprite background(BackGroundTexture); 
 	Sprite crossBar(crossBarTexture);
-	playerSprite.setPosition(200,450);
 
 	//playerSprite.move(Vector2f(30,0));
+	//player  124x120
+	//background 407x650
+	// crossBar 68x14
+	int x = 100, y = 300, h = 200;
+	float dx = 0, dy = 0;
 	while (windows.isOpen())
 	{
 		while (windows.pollEvent(event))
 		{
 			float dt = clock.restart().asSeconds();
 			if (event.type == sf::Event::Closed) windows.close();
-			if (event.type == Event::KeyPressed)
-			{
-				switch (event.key.code) {
-				case Keyboard::Left: 
-					break;
-				
-				case Keyboard::Right: 
-					break;
 		
-				}
-			}
 
 		}
-		//
+		if (Keyboard::isKeyPressed(Keyboard::Right)) {
+			playerSprite.setTexture(playerRightTexture);
+			x += 3;
+		}
+		    
+		if (Keyboard::isKeyPressed(Keyboard::Left)) {
+			playerSprite.setTexture(playerRightTexture);
+			x -= 3;
+		}
+
+		dy += 0.2;
+		y += dy;
+
+		if (y > 590)
+		{
+			dy = -11;
+		}
+	
 		windows.draw(background);
 		windows.draw(playerSprite);
+		playerSprite.setPosition(x,y);
 		for (int i = 0; i < 10; i++)
 		{
 			crossBar.setPosition(crossBarList[i].x, crossBarList[i].y);
