@@ -61,6 +61,7 @@ int main()
 			}
 
 		}
+		//
 		windows.draw(background);
 		windows.draw(playerSprite);
 		for (int i = 0; i < 10; i++)
