@@ -3,30 +3,43 @@
 #include <SFML/Audio.hpp>
 #include <cmath>
 #include <ctime>
+#include <time.h>
 #include <cstdlib>
 #define SPEED 50;
 
 using namespace sf;
+struct CrossBarStruct
+{
+	int x, y;
+};
 int main()
 {
+	srand(time(NULL));
 	Vector2f v;
 	sf::Clock clock;
-	RenderWindow windows(VideoMode(532, 850), "Jump Game");
-	windows.setSize(Vector2u(532, 850));
+	RenderWindow windows(VideoMode(407,650), "Jump Game");
+	windows.setSize(Vector2u(407,650));
 	Event event;
-
-	windows.setFramerateLimit(60);
-	Vector2f moveRight(20,0);
-	Vector2f moveLeft(-20, 0);
+	CrossBarStruct crossBarList[10];
+	for (int i = 0; i < 10; i++)
+	{
+		crossBarList[i].x = rand() % 363;
+		crossBarList[i].y = rand() % 626;
+	}
+	windows.setFramerateLimit(60); //cho framerate la 60
 	Texture BackGroundTexture;
 	Texture playerRightTexture;
 	Texture playerLeftTexture;
-	playerLeftTexture.loadFromFile("resource/image/leftx2.png");
-	playerRightTexture.loadFromFile("resource/image/right2x.png");
+	Texture playerUpTexture;
+	Texture crossBarTexture;
+	crossBarTexture.loadFromFile("resource/image/crossbar.png");
+	playerLeftTexture.loadFromFile("resource/image/left.png");
+	playerRightTexture.loadFromFile("resource/image/right.png");
 	BackGroundTexture.loadFromFile("resource/image/background.png");
 	Sprite playerSprite(playerLeftTexture);
-	Sprite background(BackGroundTexture);
-	playerSprite.setPosition(250,730);
+	Sprite background(BackGroundTexture); 
+	Sprite crossBar(crossBarTexture);
+	playerSprite.setPosition(200,450);
 
 	//playerSprite.move(Vector2f(30,0));
 	while (windows.isOpen())
@@ -39,19 +52,23 @@ int main()
 			{
 				switch (event.key.code) {
 				case Keyboard::Left: 
-					playerSprite.setTexture(playerLeftTexture);
-					playerSprite.move(moveLeft); break;
-				case Keyboard::Right: 
-					playerSprite.setTexture(playerRightTexture);
-					playerSprite.move(moveRight);
 					break;
+				
+				case Keyboard::Right: 
+					break;
+		
 				}
 			}
 
 		}
-		windows.clear();
 		windows.draw(background);
 		windows.draw(playerSprite);
+		for (int i = 0; i < 10; i++)
+		{
+			crossBar.setPosition(crossBarList[i].x, crossBarList[i].y);
+			windows.draw(crossBar);
+		}
+
 		windows.display();
 	}
 
