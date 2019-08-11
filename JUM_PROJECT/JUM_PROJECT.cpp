@@ -9,6 +9,10 @@
 #define SPEED 50;
 
 using namespace sf;
+void GameOver(RenderWindow& windows)
+{
+
+}
 struct CrossBarStruct
 {
 	int x, y;
@@ -25,9 +29,26 @@ int main()
 	CrossBarStruct crossBarList[10];
 	for (int i = 0; i < 10; i++)
 	{
-		crossBarList[i].x = rand() % 363;
-		crossBarList[i].y = rand() % 626;
+		crossBarList[i].x = rand() % 350;
+		crossBarList[i].y = rand() % 550;
 	}
+	//tao cua so Gameover
+	RectangleShape gameoverBackground(sf::Vector2f(407, 650));
+	gameoverBackground.setFillColor(sf::Color::White);
+	//load font
+	Font font;
+	font.loadFromFile("resource/font/al-seana.ttf");
+	//score
+	Text scoreText;
+	scoreText.setFont(font);
+	scoreText.setCharacterSize(50);
+	scoreText.setFillColor(Color::Black);
+	//gameover
+	Text gameoverText;
+	gameoverText.setFont(font);
+	gameoverText.setString("Game Over!");
+	gameoverText.setCharacterSize(80);
+	gameoverText.setFillColor(sf::Color::Red);
 	windows.setFramerateLimit(60); //cho framerate la 60
 	Texture BackGroundTexture;
 	Texture playerRightTexture;
@@ -41,6 +62,13 @@ int main()
 	Sprite playerSprite(playerLeftTexture);
 	Sprite background(BackGroundTexture);
 	Sprite crossBar(crossBarTexture);
+	//sound
+	SoundBuffer buffer;
+	buffer.loadFromFile("resource/sound/jump.wav");
+	Sound sound;
+	sound.setBuffer(buffer);
+	//score 
+	int score = 0;
 	//playerSprite.move(Vector2f(30,0));
 	//player  124x120
 	//background 407x650
@@ -56,6 +84,7 @@ int main()
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Right)) {
 			playerSprite.setTexture(playerRightTexture);
+			
 			x += 3;
 		}
 
@@ -68,16 +97,19 @@ int main()
 		dy += 0.2;
 		y += dy;
 		//neu nhan vat den vi tri
-		if (y > 590)
-		{
-			dy = -13;
-		}
+	
 		//std::cout << dy <<" "<<y<< "\n";
+
+		/*if (x> 650)
+			x = 0;
+		if (x < 0)
+			x = 650;*/
 		if (y < h) {
-			//std::cout << "start" << "\n";
+			/*std::cout << "start" << "\n";
 			//std::cout << dy << " " << y << "\n";
-			//std::cout << "end " << "\n";
-			y = h; //giu cho dy am
+			//std::cout << "end " << "\n";*/ 
+			//giu cho dy am
+			y = h;
 			for (int i = 0; i < 10; i++) {
 				crossBarList[i].y = crossBarList[i].y - dy;
 				if (crossBarList[i].y > 626) {
@@ -86,15 +118,51 @@ int main()
 				}
 			}
 		}
+		//xac dinh va cham voi crossBar
+
+		for (int i = 0; i < 10; i++) {
+			if ((x + 50 > crossBarList[i].x) && (x + 20 < crossBarList[i].x + 68)
+				&& (y + 70 > crossBarList[i].y) && (y + 70 < crossBarList[i].y + 14) && (dy > 0)) {
+				sound.play();
+				dy = -10;
+			}
+		}
+		//tinh diem
+		//vi y==h se am nen se luon + diem
+		if (y == h)
+		{
+			score += 1;
+			scoreText.setString("Score: " + std::to_string(score));
+		}
 		windows.draw(background);
 		windows.draw(playerSprite);
+		
 		playerSprite.setPosition(x, y);
 		for (int i = 0; i < 10; i++)
 		{
 			crossBar.setPosition(crossBarList[i].x, crossBarList[i].y);
 			windows.draw(crossBar);
 		}
-
+		if (y > 590)
+		{
+			gameoverText.setPosition(30, 200);
+			scoreText.setPosition(150, 400);
+			while (windows.isOpen())
+			{
+				sf::Event event;
+				while (windows.pollEvent(event))
+				{
+					if (event.type == sf::Event::Closed)
+						windows.close();
+				}
+				windows.draw(gameoverBackground);
+				windows.draw(gameoverText);
+				windows.draw(scoreText);
+				windows.display();
+			}
+			return 0;
+		}
+		windows.draw(scoreText);
 		windows.display();
 	}
 
